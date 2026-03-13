@@ -1,0 +1,96 @@
+# Self-Healing CI/CD 워크플로우 템플릿
+#
+# CI 테스트가 실패하면 AI가 자동으로 에러를 분석하고 수정 PR을 생성합니다.
+#
+# 사용법:
+# 1. 이 파일을 .github/workflows/self-healing-ci.yml로 복사
+# 2. GitHub Secrets에 ANTHROPIC_API_KEY 추가
+# 3. test 스크립트를 프로젝트에 맞게 수정
+
+name: Self-Healing CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  # Step 1: 일반 테스트 실행
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        id: test
+        run: npm test 2>&1 | tee test-output.log
+        continue-on-error: true
+
+      - name: Upload test log
+        if: steps.test.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-output
+          path: test-output.log
+
+    outputs:
+      test-result: ${{ steps.test.outcome }}
+
+  # Step 2: 테스트 실패 시 AI가 자동 수정
+  auto-fix:
+    needs: test
+    if: needs.test.outputs.test-result == 'failure'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download test log
+        uses: actions/download-artifact@v4
+        with:
+          name: test-output
+
+      - name: AI Auto-Fix
+        uses: OpenHands/OpenHands/.github/workflows/openhands-resolver.yml@main
+        with:
+          LLM_MODEL: "anthropic/claude-sonnet-4-20250514"
+          MAX_ITERATIONS: 15
+          PROMPT: |
+            CI 테스트가 실패했습니다.
+            test-output.log 파일을 읽고 에러 원인을 분석한 뒤,
+            코드를 수정하고 테스트가 통과하는지 확인해주세요.
+            수정이 완료되면 PR을 생성해주세요.
+        secrets:
+          LLM_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+  # Step 3: 테스트 성공 시 배포
+  deploy:
+    needs: test
+    if: |
+      needs.test.outputs.test-result == 'success' &&
+      github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Vercel 배포 (프로젝트에 맞게 수정)
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'

@@ -1,0 +1,42 @@
+# OpenHands Resolver GitHub Actions 워크플로우 템플릿
+#
+# 사용법:
+# 1. 이 파일을 .github/workflows/openhands-resolver.yml로 복사
+# 2. GitHub Secrets에 ANTHROPIC_API_KEY 추가
+# 3. 이슈에 fix-me 라벨을 붙이거나 @openhands-agent 멘션
+#
+# 참고: https://github.com/OpenHands/OpenHands/blob/main/openhands/resolver/README.md
+
+name: OpenHands Issue Resolver
+
+on:
+  issues:
+    types: [labeled]
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  resolve-issue:
+    # fix-me 라벨이 붙은 이슈 또는 @openhands-agent 멘션 시 트리거
+    if: |
+      (github.event_name == 'issues' &&
+       contains(github.event.issue.labels.*.name, 'fix-me')) ||
+      (github.event_name == 'issue_comment' &&
+       contains(github.event.comment.body, '@openhands-agent')) ||
+      (github.event_name == 'pull_request_review_comment' &&
+       contains(github.event.comment.body, '@openhands-agent'))
+    uses: OpenHands/OpenHands/.github/workflows/openhands-resolver.yml@main
+    secrets:
+      LLM_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    with:
+      # Claude 모델 사용 (변경 가능)
+      LLM_MODEL: "anthropic/claude-sonnet-4-20250514"
+      # 최대 반복 횟수 (무한 루프 방지)
+      MAX_ITERATIONS: 30
