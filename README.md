@@ -34,12 +34,26 @@
 └─────────────────────────────────────────────────────────────┘
 ```
 
+## 검증된 수익 사례 (하이라이트)
+
+| 창업자 | 제품 | 월 매출 | 방법 |
+|--------|------|---------|------|
+| Pieter Levels | Photo AI 외 | **$210K/월** | PHP+jQuery, 직원 0명 |
+| Maor Shlomo | Base44 | $3.5M ARR → **$80M 엑싯** | Claude LLM 기반 바이브코딩 플랫폼 |
+| Danny Postma | HeadshotPro | **$300K/월** | SEO + AI 래퍼, 솔로 |
+| Nick Dobos | BoredHumans | **$733K/월** | 100+ AI 도구, 광고 수익 |
+| Theanna (Anna) | Theanna | $203K ARR | **비개발자**, Claude Code + Lovable |
+
+> 상세 사례: [docs/case-studies.md](docs/case-studies.md)
+
 ## 문서 구조
 
 | 문서 | 설명 |
 |------|------|
 | [docs/tools-catalog.md](docs/tools-catalog.md) | 검증된 도구 카탈로그 (Stars, 기능, 비용) |
-| [docs/architecture-patterns.md](docs/architecture-patterns.md) | 4가지 아키텍처 패턴 상세 |
+| [docs/architecture-patterns.md](docs/architecture-patterns.md) | 4가지 기본 아키텍처 패턴 |
+| [docs/advanced-patterns.md](docs/advanced-patterns.md) | 고급 패턴 (Continuous Claude, 병렬 에이전트 등) |
+| [docs/case-studies.md](docs/case-studies.md) | 실명+실매출 검증 사례 + 한국 커뮤니티 |
 | [docs/cost-analysis.md](docs/cost-analysis.md) | 하드웨어 + 월 운영비 + 비교 분석 |
 | [docs/setup-guide.md](docs/setup-guide.md) | Phase 1~3 단계별 셋업 가이드 |
 | [docs/awesome-list.md](docs/awesome-list.md) | 관련 리포/도구/커뮤니티 큐레이션 |
