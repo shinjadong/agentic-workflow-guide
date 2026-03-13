@@ -2,6 +2,17 @@
 
 > AI 개발 워크플로우 관련 리포, 도구, 커뮤니티 큐레이션
 
+## AI 비서 / 오케스트레이터
+
+| 리포 | Stars | 설명 |
+|------|-------|------|
+| [openclaw/openclaw](https://github.com/openclaw/openclaw) | **310,000** | 24/7 AI 비서, 21개 메시징 플랫폼, 멀티에이전트, MCP 네이티브 |
+| [abhi1693/openclaw-mission-control](https://github.com/abhi1693/openclaw-mission-control) | - | OpenClaw 에이전트 관리 대시보드 |
+| [ComposioHQ/secure-openclaw](https://github.com/ComposioHQ/secure-openclaw) | - | OpenClaw 보안 강화 래퍼 |
+| [moazbuilds/claudeclaw](https://github.com/moazbuilds/claudeclaw) | - | Claude 특화 경량 OpenClaw 변형 |
+| [ComposioHQ/agent-orchestrator](https://github.com/ComposioHQ/agent-orchestrator) | - | 병렬 멀티에이전트 오케스트레이터 |
+| [AnandChowdhary/continuous-claude](https://github.com/AnandChowdhary/continuous-claude) | - | Claude 무한 루프 자율 에이전트 |
+
 ## 자율 코딩 에이전트
 
 | 리포 | Stars | 설명 |

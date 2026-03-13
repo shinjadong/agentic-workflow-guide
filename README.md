@@ -2,37 +2,48 @@
 
 > **1인 창업자를 위한 AI 개발팀 구축 실전 가이드**
 >
-> "500만원 PC + 무제한 Claude + OpenHands" 조합은 망상이 아니라, 글로벌 Top-tier 솔로 파운더들이 실제로 구축하고 있는 아키텍처입니다.
+> OpenClaw(비서) + OpenHands(자율코더) + Claude Code(정밀도구)
+> = WhatsApp에서 지시 → AI가 코딩 → PR → 리뷰 → 자동 배포
 
 ## TL;DR
 
 | 항목 | 내용 |
 |------|------|
 | **목표** | AI 에이전트를 "독립된 부서"처럼 세팅하여 1인이 10인 팀 역할 수행 |
-| **월 비용** | ~37만원 (vs 주니어 개발자 1명 250-350만원) |
-| **핵심 도구** | OpenHands ⭐69K, GitHub gh-aw ⭐4.1K, Dify ⭐133K |
-| **핵심 패턴** | Issue 작성 → AI 자동 구현 → PR 생성 → 사람은 Merge만 |
+| **월 비용** | ~38-56만원 (vs 주니어 개발자 1명 250-350만원) |
+| **핵심 도구** | OpenClaw ⭐310K, OpenHands ⭐69K, Claude Code, CodeRabbit |
+| **핵심 패턴** | WhatsApp 지시 → AI 자동 구현 → PR → 리뷰 → 사람은 Merge만 |
 
-## 시스템 블록 구조
+## 풀 아키텍처 (완성형)
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    Agentic Development Pipeline              │
-│                                                              │
-│  ┌──────────┐    ┌──────────────┐    ┌──────────┐           │
-│  │ PM Block │───→│ Coder Block  │───→│ Review   │───→ Deploy│
-│  │          │    │              │    │ Block    │           │
-│  │ Notion   │    │ OpenHands    │    │ CodeRab- │    Vercel │
-│  │ Linear   │    │ Claude Code  │    │ bit      │    GitHub │
-│  │ GitHub   │    │ Aider        │    │ Claude   │    Actions│
-│  │ Issues   │    │              │    │          │           │
-│  └──────────┘    └──────┬───────┘    └──────────┘           │
-│                         │                                    │
-│                    Self-Healing                               │
-│                    Loop (자동                                  │
-│                    에러 수정)                                   │
-└─────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                  │
+│   대표 (WhatsApp / Telegram)                                     │
+│         │                                                        │
+│         ▼                                                        │
+│   ┌─────────────┐                                                │
+│   │  OpenClaw    │ 24/7 AI 비서 (⭐310K)                         │
+│   │  (접수/분류/  │ • 영구 메모리                                   │
+│   │   위임/보고)  │ • 멀티에이전트 오케스트레이터                      │
+│   └──────┬──────┘                                                │
+│          │                                                        │
+│     ┌────┴────┐                                                   │
+│     ▼         ▼                                                   │
+│  ┌────────┐ ┌────────────┐                                        │
+│  │OpenHands│ │ Claude Code │                                       │
+│  │(⭐69K)  │ │ (정밀 코딩)  │                                       │
+│  │자율 코딩 │ │ 아키텍처/   │                                       │
+│  │Self-Heal│ │ 리팩터링     │                                       │
+│  └───┬────┘ └─────┬──────┘                                        │
+│      └──────┬─────┘                                               │
+│             ▼                                                     │
+│   GitHub → CodeRabbit 리뷰 → [Merge] → Vercel 자동 배포           │
+│                                                                  │
+└─────────────────────────────────────────────────────────────────┘
 ```
+
+> 상세 아키텍처: [docs/full-architecture.md](docs/full-architecture.md)
 
 ## 검증된 수익 사례 (하이라이트)
 
@@ -50,6 +61,8 @@
 
 | 문서 | 설명 |
 |------|------|
+| **[docs/full-architecture.md](docs/full-architecture.md)** | **풀 아키텍처 기획서 (OpenClaw + OpenHands + Claude Code)** |
+| [docs/openclaw-guide.md](docs/openclaw-guide.md) | OpenClaw 상세 가이드 (⭐310K, 설치, 연동) |
 | [docs/tools-catalog.md](docs/tools-catalog.md) | 검증된 도구 카탈로그 (Stars, 기능, 비용) |
 | [docs/architecture-patterns.md](docs/architecture-patterns.md) | 4가지 기본 아키텍처 패턴 |
 | [docs/advanced-patterns.md](docs/advanced-patterns.md) | 고급 패턴 (Continuous Claude, 병렬 에이전트 등) |
@@ -59,20 +72,25 @@
 | [docs/awesome-list.md](docs/awesome-list.md) | 관련 리포/도구/커뮤니티 큐레이션 |
 | [tools/templates/](tools/templates/) | GitHub Actions 워크플로우 템플릿 |
 
-## 검증된 핵심 도구 (Top 10)
+## 핵심 도구 스택
 
-| # | 도구 | Stars | 역할 | 비용 |
-|---|------|-------|------|------|
-| 1 | [OpenHands](https://github.com/OpenHands/OpenHands) | 69,000 | 자율 코딩 에이전트 | 무료 + LLM API |
-| 2 | [Dify](https://github.com/langgenius/dify) | 133,000 | 비주얼 워크플로우 빌더 | 무료~$159/mo |
-| 3 | [Daytona](https://github.com/daytonaio/daytona) | 64,500 | AI 코드 샌드박스 (90ms 기동) | 무료 |
-| 4 | [GitHub gh-aw](https://github.com/github/gh-aw) | 4,100 | 마크다운→GitHub Actions 변환 | 무료 |
-| 5 | [ruflo](https://github.com/ruvnet/ruflo) | 20,800 | Claude 멀티에이전트 스웜 | 무료 |
-| 6 | [Aider](https://github.com/Aider-AI/aider) | - | 터미널 페어 프로그래밍 | 무료 + LLM API |
-| 7 | [Claude Code](https://claude.ai) | - | 만능 AI 코더 (CLI) | $100-200/mo |
-| 8 | [CodeRabbit](https://coderabbit.ai) | - | AI 코드 리뷰 | 무료~$15/mo |
-| 9 | [GPT-Engineer](https://github.com/gpt-engineer-org/gpt-engineer) | - | 프로젝트 부트스트랩 | 무료 + API |
-| 10 | [Sweep AI](https://github.com/sweepai/sweep) | - | Issue→PR 자동화 | 무료 |
+### Tier 1: 완성형 3종 세트 (우리 아키텍처의 핵심)
+
+| 도구 | Stars | 역할 | 비용 |
+|------|-------|------|------|
+| [**OpenClaw**](https://github.com/openclaw/openclaw) | **310,000** | 24/7 AI 비서 + 오케스트레이터 | 무료 + API |
+| [**OpenHands**](https://github.com/OpenHands/OpenHands) | **69,000** | 자율 코딩 에이전트 (Self-Healing) | 무료 + API |
+| [**Claude Code**](https://claude.ai) | - | 정밀 코딩 (아키텍처/리팩터링) | $100-200/mo |
+
+### Tier 2: 보조 도구
+
+| 도구 | Stars | 역할 | 비용 |
+|------|-------|------|------|
+| [CodeRabbit](https://coderabbit.ai) | - | AI 코드 리뷰 | 무료~$15/mo |
+| [GitHub gh-aw](https://github.com/github/gh-aw) | 4,100 | 마크다운→GitHub Actions | 무료 |
+| [Daytona](https://github.com/daytonaio/daytona) | 64,500 | AI 코드 샌드박스 | 무료 |
+| [Aider](https://github.com/Aider-AI/aider) | - | 터미널 페어 프로그래밍 | 무료 + API |
+| [Dify](https://github.com/langgenius/dify) | 133,000 | 비주얼 워크플로우 빌더 | 무료~ |
 
 ## Quick Start (5분 안에 시작)
 
@@ -90,18 +108,24 @@ pip install aider-chat
 cp tools/templates/openhands-resolver.yml .github/workflows/
 ```
 
-## 3단계 도입 로드맵
+## 4단계 구축 로드맵
 
-### Phase 1: 즉시 시작 (추가 비용 $0)
-- Claude Code로 코딩 → GitHub에 push → Vercel 자동 배포
+### Phase 0: 사전 준비 (1시간)
+- GitHub 리포 + Anthropic API 키 + Vercel + Tailscale
 
-### Phase 2: 리눅스 PC 도입 (일회성 ~300만원)
-- Ubuntu + Docker + OpenHands 설치
-- GitHub Issue → 자동 PR 파이프라인 가동
+### Phase 1: OpenClaw 설치 (Day 1 오전)
+- 24/7 AI 비서 가동, WhatsApp/Telegram 연결
 
-### Phase 3: 풀 오토메이션 (월 ~37만원)
-- PM(Notion) → Coder(OpenHands) → Review(CodeRabbit) → Deploy(Vercel)
-- 대표는 [Merge] 버튼만 클릭
+### Phase 2: OpenHands 설치 (Day 1 오후)
+- Docker + GitHub Resolver, Issue→자동PR 파이프라인
+
+### Phase 3: 브릿지 연결 (Day 2)
+- OpenClaw → GitHub Issue → OpenHands 자동 위임
+
+### Phase 4: Claude Code + 고급 설정 (Day 3)
+- 정밀 코딩 연동, CodeRabbit, Self-Healing CI
+
+> 상세 가이드: [docs/full-architecture.md](docs/full-architecture.md)
 
 ## 현실 체크
 
